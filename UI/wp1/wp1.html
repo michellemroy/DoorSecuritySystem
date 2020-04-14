@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {
+  margin: 0 auto;
+  max-width: 800px;
+  padding: 0 20px;
+  overflow:hidden
+}
+
+#formInfo {
+    overflow-y: auto;
+    position: fixed;
+    width: 840px;
+    top: 67.80px;
+    bottom: 56px;
+}
+</style>
+</head>
+<body>
+ <header style="position: fixed;padding: 0 20px;width: 800px;font-family: 'Comic Sans MS', cursive, sans-serif;"><h2>Please Enter Your Contact Information</h2>
+ </header>
+<div id="formInfo">
+<div id="infoDiv">
+    <form>
+        <label for="name" style="font-family: 'Comic Sans MS', cursive, sans-serif;">Enter name:</label>
+        <input type="text" id="name" name="name" size="150"><br>
+        <label for="phone" style="font-family: 'Comic Sans MS', cursive, sans-serif;">Enter phone:</label>
+        <input type="text" id="phone" name="phone" size="150"><br>
+        <input type="button" id="submit" value="submit" onclick="submitChat()">
+        <br>
+    </form>
+</div>
+<div id="msgDiv">
+</div>  
+</div>
+</body>
+<script type="text/javascript" src="lib/axios/dist/axios.standalone.js"></script>
+<script type="text/javascript" src="lib/CryptoJS/rollups/hmac-sha256.js"></script>
+<script type="text/javascript" src="lib/CryptoJS/rollups/sha256.js"></script>
+<script type="text/javascript" src="lib/CryptoJS/components/hmac.js"></script>
+<script type="text/javascript" src="lib/CryptoJS/components/enc-base64.js"></script>
+<script type="text/javascript" src="lib/url-template/url-template.js"></script>
+<script type="text/javascript" src="lib/apiGatewayCore/sigV4Client.js"></script>
+<script type="text/javascript" src="lib/apiGatewayCore/apiGatewayClient.js"></script>
+<script type="text/javascript" src="lib/apiGatewayCore/simpleHttpClient.js"></script>
+<script type="text/javascript" src="lib/apiGatewayCore/utils.js"></script>
+<script type="text/javascript" src="apigClient.js"></script>
+<script>
+    function submitChat(e) {
+            var name = document.getElementById('name').value;
+            var phone = document.getElementById('phone').value;
+
+            const queryString = window.location.search;
+            console.log(queryString);
+
+            const urlParams = new URLSearchParams(queryString);
+
+            const face_id = urlParams.get('face_id')
+            console.log(face_id)
+
+            const photo_name = urlParams.get('photo_name')
+            console.log(photo_name)
+
+            var params = {
+              headers: {
+                param0: 'Accept:application/json',
+              }
+            };
+
+            var body = JSON.stringify({"name": name, "phone":phone, "face_id":face_id, "photo_name":photo_name});
+
+            var botResponse = ""
+
+            var apigClient = apigClientFactory.newClient();
+            apigClient.chatbotPost(params, body)
+            .then(function(result){
+            console.log(result['data']['body']);
+            json = JSON.parse(JSON.stringify(result))
+            // alert('Passed')
+            console.log(json)
+            message = botResponse['message'];
+            var para = document.createElement("P");                       // Create a <p> element
+            var t = document.createTextNode("We will sen you an SMS soon!");      // Create a text node
+            para.appendChild(t);
+            msgdiv = document.getElementById("msgDiv");
+            msgdiv.appendChild(para);
+            }).catch( function(result){
+              console.log(JSON.stringify(result))
+            });
+    }
+</script>
+</html>

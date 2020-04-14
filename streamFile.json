@@ -1,0 +1,20 @@
+{
+    "Name":"streamProcessorForDoor",
+    "Input":{
+       "KinesisVideoStream":{
+          "Arn":"arn:aws:kinesisvideo:us-east-1:862287946727:stream/ExampleStream/1584654372061"
+       }
+    },
+    "Output":{
+       "KinesisDataStream":{
+          "Arn":"arn:aws:kinesis:us-east-1:862287946727:stream/DoorDataStream"
+       }
+    },
+    "RoleArn":"arn:aws:iam::862287946727:role/KinesisRekognitionRole",
+    "Settings":{
+       "FaceSearch":{
+          "CollectionId":"DoorFaceCollection",
+          "FaceMatchThreshold":85.5
+       }
+    }
+ }
